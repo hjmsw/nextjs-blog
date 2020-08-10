@@ -6,22 +6,24 @@ import utilStyles from '../styles/utils.module.css'
 import fetch from 'isomorphic-unfetch'
 
 export default function Weather({ weatherData }) {
-    
+    const { name, main: {temp}} = weatherData
+    const { main: description, icon } = weatherData.weather[0]
+
     return (
       <Layout>
           <Head>
-              <title>Weather for {weatherData.name} </title>
+              <title>Weather for {name}</title>
           </Head>
-          <h1>Weather for {weatherData.name}</h1>
-          <WeatherData data={weatherData}/>
+          <h1>Weather for {name}</h1>
+          <WeatherData temp={temp} description={description} icon={icon}/>
       </Layout>
     )
 }
 
 export async function getServerSideProps() {
-    const res = await fetch('http://api.openweathermap.org/data/2.5/weather?q=Kirriemuir,uk&units=metric&appid=b7bc5fed349e521e6e872cc3e97bdbd8')
+    const res = await fetch(`http://api.openweathermap.org/data/2.5/weather?q=Kirriemuir,uk&units=metric&appid=${process.env.WEATHERAPIKEY}`)
     const weatherData = await res.json()
-    //console.log(weatherData);
+    console.log(weatherData);
     return {
         props: {
             weatherData
